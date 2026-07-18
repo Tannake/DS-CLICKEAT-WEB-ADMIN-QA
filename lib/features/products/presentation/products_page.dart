@@ -186,7 +186,7 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 14),
           Expanded(child: _buildContent(prodState)),
         ],
       ),
@@ -243,7 +243,7 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
           low: low,
           out: out,
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 12),
         // ===== filter bar: compact search + status pills (white card) =====
         Container(
           decoration: BoxDecoration(
@@ -258,14 +258,14 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
               ),
             ],
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // --- search + status pills ---
               Wrap(
                 spacing: 16,
-                runSpacing: 12,
+                runSpacing: 8,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   ConstrainedBox(
@@ -286,9 +286,9 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
               ),
               // --- category pills ---
               if (categories.isNotEmpty) ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 const Divider(height: 1, thickness: 1, color: AppColors.line),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 _PillRow(
                   children: [
                     _CategoryPill(
@@ -310,7 +310,7 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         // ===== table =====
         Expanded(
           child: filtered.isEmpty
@@ -427,7 +427,7 @@ class _StatCard extends StatelessWidget {
             Container(width: 4, color: color),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -436,26 +436,26 @@ class _StatCard extends StatelessWidget {
                       label,
                       style: const TextStyle(
                         color: AppColors.ink3,
-                        fontSize: 12.5,
+                        fontSize: 11.5,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Text(
                       value,
                       style: const TextStyle(
-                        fontSize: 26,
+                        fontSize: 20,
                         fontWeight: FontWeight.w700,
                         height: 1,
                         letterSpacing: -0.5,
                         color: AppColors.ink,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 3),
                     Text(
                       sub,
                       style: const TextStyle(
-                        fontSize: 12,
+                        fontSize: 11,
                         color: AppColors.ink3,
                       ),
                     ),
@@ -487,7 +487,7 @@ class _SearchBox extends StatelessWidget {
         color: const Color(0xFFF4F5F7),
         borderRadius: BorderRadius.circular(10),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       child: Row(
         children: [
           const Icon(Icons.search_rounded, size: 18, color: Color(0xFF6B7280)),
@@ -579,7 +579,7 @@ class _StatusPill extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
           color: active ? color : AppColors.surface,
           borderRadius: BorderRadius.circular(10),
@@ -630,7 +630,7 @@ class _CategoryPill extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
         decoration: BoxDecoration(
           color: active ? AppColors.navy : AppColors.surface,
           borderRadius: BorderRadius.circular(99),
