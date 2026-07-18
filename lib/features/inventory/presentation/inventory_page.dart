@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:ds_clickeat_web_admin/core/theme/app_theme.dart';
+import 'package:ds_clickeat_web_admin/core/widgets/horizontal_pill_row.dart';
 import 'package:ds_clickeat_web_admin/core/widgets/scrollable_table.dart';
 import 'package:ds_clickeat_web_admin/features/inventory/controllers/inventory_controller.dart';
 import 'package:ds_clickeat_web_admin/features/inventory/models/inventory_product.dart';
@@ -194,9 +195,7 @@ class _InventoryPageState extends ConsumerState<InventoryPage> {
                 const SizedBox(height: 8),
                 const Divider(height: 1, thickness: 1, color: AppColors.line),
                 const SizedBox(height: 8),
-                Wrap(
-                  spacing: 7,
-                  runSpacing: 7,
+                HorizontalPillRow(
                   children: [
                     _CategoryPill(
                       label: 'Todas',

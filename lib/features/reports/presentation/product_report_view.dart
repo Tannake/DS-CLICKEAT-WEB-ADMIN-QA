@@ -29,7 +29,63 @@ ReportView buildProductReportView(ProductReportState state) {
   return ReportView(
     title: 'Reporte de productos',
     subtitle: 'Productos del periodo seleccionado',
-    filters: const [],
+    filters: [
+      ReportFilter('Fechas', reportDateRangeLabel(state.dateStart, state.dateEnd)),
+      ReportFilter(
+        'Sucursal',
+        ReportFilter.summarize(
+          items: state.premises.map((p) => p.premId).toList(),
+          labelOf: (id) =>
+              state.premises.firstWhere((p) => p.premId == id).premName,
+          selected: state.selectedPremIds,
+        ),
+      ),
+      ReportFilter(
+        'Tipo de pedido',
+        ReportFilter.summarize(
+          items: state.orderTypes.map((o) => o.ordeType).toList(),
+          labelOf: (code) =>
+              state.orderTypes.firstWhere((o) => o.ordeType == code).ordeName,
+          selected: state.selectedOrderTypes,
+        ),
+      ),
+      ReportFilter(
+        'Producto',
+        ReportFilter.summarize(
+          items: state.products.map((p) => p.prodId).toList(),
+          labelOf: (id) =>
+              state.products.firstWhere((p) => p.prodId == id).prodName,
+          selected: state.selectedProdIds,
+        ),
+      ),
+      ReportFilter(
+        'Categoría',
+        ReportFilter.summarize(
+          items: state.categories.map((c) => c.prodcId).toList(),
+          labelOf: (id) =>
+              state.categories.firstWhere((c) => c.prodcId == id).prodcName,
+          selected: state.selectedProdcIds,
+        ),
+      ),
+      ReportFilter(
+        'Tamaño',
+        ReportFilter.summarize(
+          items: state.sizes.map((s) => s.prodsId).toList(),
+          labelOf: (id) =>
+              state.sizes.firstWhere((s) => s.prodsId == id).prodsName,
+          selected: state.selectedProdsIds,
+        ),
+      ),
+      ReportFilter(
+        'Opción',
+        ReportFilter.summarize(
+          items: state.options.map((o) => o.prodoId).toList(),
+          labelOf: (id) =>
+              state.options.firstWhere((o) => o.prodoId == id).prodoName,
+          selected: state.selectedProdoIds,
+        ),
+      ),
+    ],
     kpis: [
       ReportKpi(
         label: 'Productos vendidos',

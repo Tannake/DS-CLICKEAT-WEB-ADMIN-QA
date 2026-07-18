@@ -36,7 +36,57 @@ ReportView buildOrdersReportView(OrdersReportState state) {
   return ReportView(
     title: 'Reporte de pedidos',
     subtitle: 'Pedidos del periodo seleccionado',
-    filters: const [],
+    filters: [
+      ReportFilter('Fechas', reportDateRangeLabel(state.dateStart, state.dateEnd)),
+      ReportFilter(
+        'Sucursal',
+        ReportFilter.summarize(
+          items: state.premises.map((p) => p.premId).toList(),
+          labelOf: (id) =>
+              state.premises.firstWhere((p) => p.premId == id).premName,
+          selected: state.selectedPremIds,
+        ),
+      ),
+      ReportFilter(
+        'Tipo de pedido',
+        ReportFilter.summarize(
+          items: state.orderTypes.map((o) => o.ordeType).toList(),
+          labelOf: (code) =>
+              state.orderTypes.firstWhere((o) => o.ordeType == code).ordeName,
+          selected: state.selectedOrderTypes,
+        ),
+      ),
+      ReportFilter(
+        'Método de pago',
+        ReportFilter.summarize(
+          items: state.payments.map((p) => p.paymId).toList(),
+          labelOf: (id) =>
+              state.payments.firstWhere((p) => p.paymId == id).paymName,
+          selected: state.selectedPaymIds,
+        ),
+      ),
+      ReportFilter(
+        'Estado',
+        ReportFilter.summarize(
+          items: state.orderStates.map((o) => o.ordeState).toList(),
+          labelOf: (code) => state.orderStates
+              .firstWhere((o) => o.ordeState == code)
+              .stateName,
+          selected: state.selectedOrderStates,
+        ),
+      ),
+      ReportFilter(
+        'Razón de cancelación',
+        ReportFilter.summarize(
+          items: state.reasons.map((r) => r.reasId).toList(),
+          labelOf: (id) =>
+              state.reasons.firstWhere((r) => r.reasId == id).reasName,
+          selected: state.selectedReasIds,
+        ),
+      ),
+      if (state.orderIdText.trim().isNotEmpty)
+        ReportFilter('N° de pedido', state.orderIdText.trim()),
+    ],
     kpis: [
       ReportKpi(
         label: 'Pedidos totales',

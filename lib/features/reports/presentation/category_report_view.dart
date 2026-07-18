@@ -31,7 +31,36 @@ ReportView buildCategoryReportView(CategoryReportState state) {
   return ReportView(
     title: 'Reporte de categorías',
     subtitle: 'Categorías del periodo seleccionado',
-    filters: const [],
+    filters: [
+      ReportFilter('Fechas', reportDateRangeLabel(state.dateStart, state.dateEnd)),
+      ReportFilter(
+        'Sucursal',
+        ReportFilter.summarize(
+          items: state.premises.map((p) => p.premId).toList(),
+          labelOf: (id) =>
+              state.premises.firstWhere((p) => p.premId == id).premName,
+          selected: state.selectedPremIds,
+        ),
+      ),
+      ReportFilter(
+        'Tipo de pedido',
+        ReportFilter.summarize(
+          items: state.orderTypes.map((o) => o.ordeType).toList(),
+          labelOf: (code) =>
+              state.orderTypes.firstWhere((o) => o.ordeType == code).ordeName,
+          selected: state.selectedOrderTypes,
+        ),
+      ),
+      ReportFilter(
+        'Categoría',
+        ReportFilter.summarize(
+          items: state.categories.map((c) => c.prodcId).toList(),
+          labelOf: (id) =>
+              state.categories.firstWhere((c) => c.prodcId == id).prodcName,
+          selected: state.selectedProdcIds,
+        ),
+      ),
+    ],
     kpis: [
       ReportKpi(
         label: 'Categorías vendidas',

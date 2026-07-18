@@ -31,7 +31,26 @@ ReportView buildDailyReportView(DailyReportState state) {
   return ReportView(
     title: 'Dashboard diario',
     subtitle: 'Así va el negocio hoy',
-    filters: const [],
+    filters: [
+      ReportFilter(
+        'Sucursal',
+        ReportFilter.summarize(
+          items: state.premises.map((p) => p.premId).toList(),
+          labelOf: (id) =>
+              state.premises.firstWhere((p) => p.premId == id).premName,
+          selected: state.selectedPremIds,
+        ),
+      ),
+      ReportFilter(
+        'Tipo de pedido',
+        ReportFilter.summarize(
+          items: state.orderTypes.map((o) => o.ordeType).toList(),
+          labelOf: (code) =>
+              state.orderTypes.firstWhere((o) => o.ordeType == code).ordeName,
+          selected: state.selectedOrderTypes,
+        ),
+      ),
+    ],
     kpis: [
       ReportKpi(
         label: 'Venta total de hoy',

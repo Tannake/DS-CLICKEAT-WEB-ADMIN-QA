@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:ds_clickeat_web_admin/core/theme/app_theme.dart';
+import 'package:ds_clickeat_web_admin/core/widgets/horizontal_pill_row.dart';
 import 'package:ds_clickeat_web_admin/core/widgets/scrollable_table.dart';
 import 'package:ds_clickeat_web_admin/features/premises/controllers/premises_controller.dart';
 import 'package:ds_clickeat_web_admin/features/products/controllers/products_controller.dart';
@@ -289,7 +290,7 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
                 const SizedBox(height: 8),
                 const Divider(height: 1, thickness: 1, color: AppColors.line),
                 const SizedBox(height: 8),
-                _PillRow(
+                HorizontalPillRow(
                   children: [
                     _CategoryPill(
                       label: 'Todas',
@@ -601,16 +602,6 @@ class _StatusPill extends StatelessWidget {
 // ===========================================================================
 // Category pills
 // ===========================================================================
-
-class _PillRow extends StatelessWidget {
-  final List<Widget> children;
-  const _PillRow({required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(spacing: 7, runSpacing: 7, children: children);
-  }
-}
 
 class _CategoryPill extends StatelessWidget {
   final String label;

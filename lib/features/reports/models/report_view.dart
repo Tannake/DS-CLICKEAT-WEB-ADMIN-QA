@@ -7,6 +7,33 @@ class ReportFilter {
   final String label;
   final String value;
   const ReportFilter(this.label, this.value);
+
+  /// Summarizes a multi-select filter's applied value for display (e.g. in a
+  /// PDF export's header) the same way the on-screen filter chips do:
+  /// "Todos" when every option is selected, "Ninguno" when none, otherwise
+  /// the selected item name(s) joined by comma.
+  static String summarize<T>({
+    required List<T> items,
+    required String Function(T) labelOf,
+    required Set<T> selected,
+  }) {
+    if (items.isEmpty) return '—';
+    if (selected.length == items.length) return 'Todos';
+    if (selected.isEmpty) return 'Ninguno';
+    return selected.map(labelOf).join(', ');
+  }
+}
+
+/// Formats a date range as `dd/MM/yyyy – dd/MM/yyyy` for display in a PDF
+/// export's header (mirrors the on-screen "Fechas" filter chip, but with the
+/// full year since the PDF is a standalone document).
+String reportDateRangeLabel(DateTime start, DateTime end) {
+  String fmt(DateTime d) {
+    String two(int v) => v.toString().padLeft(2, '0');
+    return '${two(d.day)}/${two(d.month)}/${d.year}';
+  }
+
+  return '${fmt(start)} – ${fmt(end)}';
 }
 
 class ReportKpi {

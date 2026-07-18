@@ -94,6 +94,34 @@ pw.Widget _buildHeader(ReportView view, DateTime generatedAt) {
           ),
         ],
       ),
+      if (view.filters.isNotEmpty) ...[
+        pw.SizedBox(height: 8),
+        pw.Wrap(
+          spacing: 14,
+          runSpacing: 4,
+          children: [
+            for (final f in view.filters)
+              pw.RichText(
+                text: pw.TextSpan(
+                  children: [
+                    pw.TextSpan(
+                      text: '${f.label}: ',
+                      style: const pw.TextStyle(fontSize: 8, color: _ink3),
+                    ),
+                    pw.TextSpan(
+                      text: _pdfSafe(f.value),
+                      style: pw.TextStyle(
+                        fontSize: 8,
+                        fontWeight: pw.FontWeight.bold,
+                        color: _ink,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ],
       pw.SizedBox(height: 9),
       pw.Divider(color: _line, thickness: 0.8),
       pw.SizedBox(height: 10),
@@ -110,21 +138,29 @@ class _KpiRows extends pw.StatelessWidget {
   final List<ReportKpi> kpis;
   _KpiRows(this.kpis);
 
-  static const _perRow = 5;
+  /// Cards per row never exceeds this, but — unlike a naive fixed chunk —
+  /// rows are balanced so a trailing row is never left with just one card
+  /// (which, wrapped in the same `Expanded` as every other card, would
+  /// stretch to the full row width instead of matching its siblings' size).
+  static const _maxPerRow = 6;
   static const _cardHeight = 46.0;
 
   @override
   pw.Widget build(pw.Context context) {
+    if (kpis.isEmpty) return pw.SizedBox.shrink();
+    final numRows = (kpis.length / _maxPerRow).ceil();
+    final perRow = (kpis.length / numRows).ceil();
+
     final rows = <pw.Widget>[];
-    for (var i = 0; i < kpis.length; i += _perRow) {
-      final slice = kpis.sublist(i, math.min(i + _perRow, kpis.length));
+    for (var i = 0; i < kpis.length; i += perRow) {
+      final slice = kpis.sublist(i, math.min(i + perRow, kpis.length));
       final children = <pw.Widget>[];
       for (var j = 0; j < slice.length; j++) {
         if (j > 0) children.add(pw.SizedBox(width: 8));
         children.add(pw.Expanded(child: _kpiCard(slice[j])));
       }
       rows.add(pw.SizedBox(height: _cardHeight, child: pw.Row(children: children)));
-      if (i + _perRow < kpis.length) rows.add(pw.SizedBox(height: 8));
+      if (i + perRow < kpis.length) rows.add(pw.SizedBox(height: 8));
     }
     return pw.Column(children: rows);
   }
