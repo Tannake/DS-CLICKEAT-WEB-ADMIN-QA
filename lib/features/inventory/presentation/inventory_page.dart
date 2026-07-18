@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:ds_clickeat_web_admin/core/theme/app_theme.dart';
+import 'package:ds_clickeat_web_admin/core/widgets/scrollable_table.dart';
 import 'package:ds_clickeat_web_admin/features/inventory/controllers/inventory_controller.dart';
 import 'package:ds_clickeat_web_admin/features/inventory/models/inventory_product.dart';
 import 'package:ds_clickeat_web_admin/features/inventory/presentation/inventory_edit_dialog.dart';
@@ -168,8 +169,10 @@ class _InventoryPageState extends ConsumerState<InventoryPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              Wrap(
+                spacing: 16,
+                runSpacing: 12,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   ConstrainedBox(
                     constraints: const BoxConstraints(
@@ -181,14 +184,9 @@ class _InventoryPageState extends ConsumerState<InventoryPage> {
                       onChanged: (v) => setState(() => _query = v),
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Container(width: 1, height: 24, color: AppColors.line),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _StatusFilter(
-                      value: _statusFilter,
-                      onChanged: (v) => setState(() => _statusFilter = v),
-                    ),
+                  _StatusFilter(
+                    value: _statusFilter,
+                    onChanged: (v) => setState(() => _statusFilter = v),
                   ),
                 ],
               ),
@@ -267,44 +265,47 @@ class _StatRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _StatCard(
-            color: AppColors.navy,
-            label: 'Total productos',
-            value: '$total',
-            sub: 'en el menú',
-          ),
-        ),
-        const SizedBox(width: 14),
-        Expanded(
-          child: _StatCard(
-            color: AppColors.green,
-            label: 'Disponibles',
-            value: '$available',
-            sub: 'con stock',
-          ),
-        ),
-        const SizedBox(width: 14),
-        Expanded(
-          child: _StatCard(
-            color: AppColors.amber,
-            label: 'Stock bajo',
-            value: '$low',
-            sub: 'requieren reabasto',
-          ),
-        ),
-        const SizedBox(width: 14),
-        Expanded(
-          child: _StatCard(
-            color: AppColors.red,
-            label: 'Agotados',
-            value: '$out',
-            sub: 'sin existencias',
-          ),
-        ),
-      ],
+    const gap = 14.0;
+    final cards = [
+      _StatCard(
+        color: AppColors.navy,
+        label: 'Total productos',
+        value: '$total',
+        sub: 'en el menú',
+      ),
+      _StatCard(
+        color: AppColors.green,
+        label: 'Disponibles',
+        value: '$available',
+        sub: 'con stock',
+      ),
+      _StatCard(
+        color: AppColors.amber,
+        label: 'Stock bajo',
+        value: '$low',
+        sub: 'requieren reabasto',
+      ),
+      _StatCard(
+        color: AppColors.red,
+        label: 'Agotados',
+        value: '$out',
+        sub: 'sin existencias',
+      ),
+    ];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final columns = constraints.maxWidth < 640 ? 2 : 4;
+        final cardWidth =
+            (constraints.maxWidth - gap * (columns - 1)) / columns;
+        return Wrap(
+          spacing: gap,
+          runSpacing: gap,
+          children: [
+            for (final card in cards) SizedBox(width: cardWidth, child: card),
+          ],
+        );
+      },
     );
   }
 }
@@ -696,16 +697,22 @@ class _ProductCard extends StatelessWidget {
                   ),
                 ),
               )
-            else ...[
-              const _CollectHeader(),
-              for (var i = 0; i < product.collect.length; i++)
-                _CollectRow(
-                  product: product,
-                  collect: product.collect[i],
-                  isLast: i == product.collect.length - 1,
-                  onEdit: () => onEditCollect(product.collect[i]),
+            else
+              ScrollableTable(
+                minWidth: 780,
+                child: Column(
+                  children: [
+                    const _CollectHeader(),
+                    for (var i = 0; i < product.collect.length; i++)
+                      _CollectRow(
+                        product: product,
+                        collect: product.collect[i],
+                        isLast: i == product.collect.length - 1,
+                        onEdit: () => onEditCollect(product.collect[i]),
+                      ),
+                  ],
                 ),
-            ],
+              ),
           ],
         ],
       ),

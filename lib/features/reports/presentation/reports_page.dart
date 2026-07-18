@@ -543,7 +543,7 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
     }
 
     final view = buildView();
-    final kpiGrid = _KpiGrid(view.kpis, forceColumns: view.kpis.length);
+    final kpiGrid = _KpiGrid(view.kpis);
     final chartsGrid = _ChartsGrid(view.charts);
 
     return Stack(
@@ -1596,11 +1596,7 @@ class _MultiSelectPopupBodyState<T> extends State<_MultiSelectPopupBody<T>> {
 
 class _KpiGrid extends StatelessWidget {
   final List<ReportKpi> kpis;
-  /// When set, forces the grid to exactly this many columns instead of
-  /// auto-wrapping by [minCardWidth] — used by the dashboard so its 5 KPI
-  /// cards always span the full row instead of leaving trailing empty space.
-  final int? forceColumns;
-  const _KpiGrid(this.kpis, {this.forceColumns});
+  const _KpiGrid(this.kpis);
 
   @override
   Widget build(BuildContext context) {
@@ -1609,8 +1605,13 @@ class _KpiGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
-        final columns = forceColumns ??
-            math.max(1, ((width + gap) / (minCardWidth + gap)).floor());
+        // Cap at kpis.length so cards span the full row on wide screens
+        // (no trailing empty space) while still auto-reducing to fewer
+        // columns — wrapping onto more rows — on narrow screens.
+        final columns = math.min(
+          math.max(1, kpis.length),
+          math.max(1, ((width + gap) / (minCardWidth + gap)).floor()),
+        );
         final cardWidth = (width - gap * (columns - 1)) / columns;
         return Wrap(
           spacing: gap,
@@ -2174,11 +2175,13 @@ class _LineChartView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 for (final v in valueLabels)
-                  Text(
-                    v,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600, color: chart.color),
+                  Flexible(
+                    child: Text(
+                      v,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600, color: chart.color),
+                    ),
                   ),
               ],
             ),
@@ -2197,7 +2200,14 @@ class _LineChartView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               for (final x in chart.xLabels)
-                Text(x, style: const TextStyle(fontSize: 9.5, color: Color(0xFF9CA3AF))),
+                Flexible(
+                  child: Text(
+                    x,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 9.5, color: Color(0xFF9CA3AF)),
+                  ),
+                ),
             ],
           ),
         ),

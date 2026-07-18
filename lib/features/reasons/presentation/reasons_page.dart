@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:ds_clickeat_web_admin/core/theme/app_theme.dart';
+import 'package:ds_clickeat_web_admin/core/widgets/scrollable_table.dart';
 import 'package:ds_clickeat_web_admin/features/premises/controllers/premises_controller.dart';
 import 'package:ds_clickeat_web_admin/features/reasons/controllers/reasons_controller.dart';
 import 'package:ds_clickeat_web_admin/features/reasons/models/cancel_reason.dart';
@@ -262,25 +263,28 @@ class _ReasonsTable extends StatelessWidget {
         ],
       ),
       clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: [
-          const _ReasonsTableHeader(),
-          Expanded(
-            child: ListView.builder(
-              itemCount: reasons.length,
-              itemBuilder: (context, index) {
-                final reason = reasons[index];
-                return _ReasonRow(
-                  reason: reason,
-                  last: index == reasons.length - 1,
-                  onToggle: () => onToggle(reason),
-                  onEdit: () => onEdit(reason),
-                  onDelete: () => onDelete(reason),
-                );
-              },
+      child: ScrollableTable(
+        minWidth: 560,
+        child: Column(
+          children: [
+            const _ReasonsTableHeader(),
+            Expanded(
+              child: ListView.builder(
+                itemCount: reasons.length,
+                itemBuilder: (context, index) {
+                  final reason = reasons[index];
+                  return _ReasonRow(
+                    reason: reason,
+                    last: index == reasons.length - 1,
+                    onToggle: () => onToggle(reason),
+                    onEdit: () => onEdit(reason),
+                    onDelete: () => onDelete(reason),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

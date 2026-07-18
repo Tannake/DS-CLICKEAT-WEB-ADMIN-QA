@@ -97,7 +97,10 @@ class _InventoryEditDialogState extends ConsumerState<_InventoryEditDialog> {
       backgroundColor: AppColors.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 460),
+        constraints: BoxConstraints(
+          maxWidth: 460,
+          maxHeight: MediaQuery.of(context).size.height * 0.9,
+        ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(28, 26, 28, 22),
           child: Column(
@@ -127,117 +130,131 @@ class _InventoryEditDialogState extends ConsumerState<_InventoryEditDialog> {
                 ],
               ),
               const SizedBox(height: 4),
-              Text(
-                widget.product.name,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.ink,
-                ),
-              ),
-              if (hasVariant) ...[
-                const SizedBox(height: 10),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    if (sizeName.isNotEmpty) _VariantTag(label: sizeName),
-                    if (optionName.isNotEmpty) _VariantTag(label: optionName),
-                  ],
-                ),
-              ],
-
-              const SizedBox(height: 20),
-              const Divider(height: 1, thickness: 1, color: AppColors.line),
-              const SizedBox(height: 18),
-
-              // Stock field
-              const _FieldLabel('Cantidad en inventario'),
-              const SizedBox(height: 6),
-              TextField(
-                controller: _stockCtrl,
-                autofocus: true,
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9-]')),
-                ],
-                style: const TextStyle(fontSize: 14, color: AppColors.ink),
-                onSubmitted: (_) => _saving ? null : _submit(),
-                decoration: InputDecoration(
-                  isDense: true,
-                  hintText: 'Ej. 50',
-                  errorText: _stockError,
-                  filled: true,
-                  fillColor: AppColors.surface2,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: AppColors.line),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: AppColors.navy),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Availability toggle
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                decoration: BoxDecoration(
-                  color: _available
-                      ? AppColors.green.withValues(alpha: 0.10)
-                      : AppColors.surface2,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: _available
-                        ? AppColors.green.withValues(alpha: 0.35)
-                        : AppColors.line,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _available ? 'Disponible' : 'No disponible',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: _available
-                                  ? AppColors.greenInk
-                                  : AppColors.ink2,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            _available
-                                ? 'El producto se puede pedir'
-                                : 'El producto no se puede seleccionar',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.ink3,
-                            ),
-                          ),
-                        ],
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        widget.product.name,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.ink,
+                        ),
                       ),
-                    ),
-                    Switch(
-                      value: _available,
-                      onChanged: (v) => setState(() => _available = v),
-                      activeThumbColor: Colors.white,
-                      activeTrackColor: AppColors.green,
-                      inactiveThumbColor: Colors.white,
-                      inactiveTrackColor: AppColors.ink4,
-                      trackOutlineColor:
-                          WidgetStateProperty.all(Colors.transparent),
-                    ),
-                  ],
+                      if (hasVariant) ...[
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            if (sizeName.isNotEmpty)
+                              _VariantTag(label: sizeName),
+                            if (optionName.isNotEmpty)
+                              _VariantTag(label: optionName),
+                          ],
+                        ),
+                      ],
+
+                      const SizedBox(height: 20),
+                      const Divider(
+                          height: 1, thickness: 1, color: AppColors.line),
+                      const SizedBox(height: 18),
+
+                      // Stock field
+                      const _FieldLabel('Cantidad en inventario'),
+                      const SizedBox(height: 6),
+                      TextField(
+                        controller: _stockCtrl,
+                        autofocus: true,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9-]')),
+                        ],
+                        style:
+                            const TextStyle(fontSize: 14, color: AppColors.ink),
+                        onSubmitted: (_) => _saving ? null : _submit(),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          hintText: 'Ej. 50',
+                          errorText: _stockError,
+                          filled: true,
+                          fillColor: AppColors.surface2,
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 12),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: AppColors.line),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: AppColors.navy),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Availability toggle
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: _available
+                              ? AppColors.green.withValues(alpha: 0.10)
+                              : AppColors.surface2,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: _available
+                                ? AppColors.green.withValues(alpha: 0.35)
+                                : AppColors.line,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _available ? 'Disponible' : 'No disponible',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                      color: _available
+                                          ? AppColors.greenInk
+                                          : AppColors.ink2,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    _available
+                                        ? 'El producto se puede pedir'
+                                        : 'El producto no se puede seleccionar',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.ink3,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Switch(
+                              value: _available,
+                              onChanged: (v) => setState(() => _available = v),
+                              activeThumbColor: Colors.white,
+                              activeTrackColor: AppColors.green,
+                              inactiveThumbColor: Colors.white,
+                              inactiveTrackColor: AppColors.ink4,
+                              trackOutlineColor:
+                                  WidgetStateProperty.all(Colors.transparent),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 

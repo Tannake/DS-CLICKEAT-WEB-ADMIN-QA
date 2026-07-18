@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:ds_clickeat_web_admin/core/theme/app_theme.dart';
+import 'package:ds_clickeat_web_admin/core/widgets/scrollable_table.dart';
 import 'package:ds_clickeat_web_admin/features/premises/controllers/premises_controller.dart';
 import 'package:ds_clickeat_web_admin/features/variants/controllers/variants_controller.dart';
 import 'package:ds_clickeat_web_admin/features/variants/models/product_additional.dart';
@@ -120,6 +121,7 @@ class _VariantsPageState extends ConsumerState<VariantsPage> {
               message: 'Esta sucursal aún no tiene tamaños registrados.',
             )
           : _Card(
+              minWidth: 640,
               children: [
                 const _TableHeader(
                   columns: [
@@ -218,6 +220,7 @@ class _VariantsPageState extends ConsumerState<VariantsPage> {
               message: 'Esta sucursal aún no tiene opciones registradas.',
             )
           : _Card(
+              minWidth: 640,
               children: [
                 const _TableHeader(
                   columns: [
@@ -316,6 +319,7 @@ class _VariantsPageState extends ConsumerState<VariantsPage> {
               message: 'Esta sucursal aún no tiene adicionales registrados.',
             )
           : _Card(
+              minWidth: 700,
               children: [
                 const _TableHeader(
                   columns: [
@@ -518,8 +522,9 @@ class _Section extends StatelessWidget {
 }
 
 class _Card extends StatelessWidget {
+  final double minWidth;
   final List<Widget> children;
-  const _Card({required this.children});
+  const _Card({required this.minWidth, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -537,7 +542,10 @@ class _Card extends StatelessWidget {
         ],
       ),
       clipBehavior: Clip.antiAlias,
-      child: Column(children: children),
+      child: ScrollableTable(
+        minWidth: minWidth,
+        child: Column(children: children),
+      ),
     );
   }
 }

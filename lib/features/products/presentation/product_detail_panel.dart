@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:ds_clickeat_web_admin/core/theme/app_theme.dart';
+import 'package:ds_clickeat_web_admin/core/widgets/scrollable_table.dart';
 import 'package:ds_clickeat_web_admin/features/products/controllers/product_detail_controller.dart';
 import 'package:ds_clickeat_web_admin/features/products/data/image_picker.dart';
 import 'package:ds_clickeat_web_admin/features/products/models/product_detail.dart';
@@ -620,27 +621,32 @@ class _ImageSection extends ConsumerWidget {
                   ),
           ),
           const SizedBox(width: 16),
-          OutlinedButton.icon(
-            onPressed: state.uploadingImage ? null : () => _pickAndUpload(ref),
-            icon: state.uploadingImage
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.upload_outlined, size: 18),
-            label: Text(
-              state.uploadingImage
-                  ? 'Subiendo…'
-                  : (state.creating && state.pendingImage == null
-                        ? 'Subir imagen'
-                        : 'Cambiar imagen'),
-            ),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.navy,
-              side: const BorderSide(color: AppColors.line),
-              shape: const StadiumBorder(),
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          Flexible(
+            child: OutlinedButton.icon(
+              onPressed:
+                  state.uploadingImage ? null : () => _pickAndUpload(ref),
+              icon: state.uploadingImage
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.upload_outlined, size: 18),
+              label: Text(
+                state.uploadingImage
+                    ? 'Subiendo…'
+                    : (state.creating && state.pendingImage == null
+                          ? 'Subir imagen'
+                          : 'Cambiar imagen'),
+                overflow: TextOverflow.ellipsis,
+              ),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.navy,
+                side: const BorderSide(color: AppColors.line),
+                shape: const StadiumBorder(),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+              ),
             ),
           ),
         ],
@@ -844,31 +850,34 @@ class _VariantsTable extends ConsumerWidget {
               border: Border.all(color: AppColors.line),
             ),
             clipBehavior: Clip.antiAlias,
-            child: Column(
-              children: [
-                const _VariantHeader(),
-                for (var i = 0; i < variants.length; i++)
-                  if (editingIndex == i)
-                    _EditableVariantRow(
-                      key: ValueKey('edit-$i'),
-                      index: i,
-                      variant: variants[i],
-                      sizes: detail.sizes,
-                      options: detail.options,
-                      isLast: i == variants.length - 1,
-                    )
-                  else
-                    _VariantRow(
-                      variant: variants[i],
-                      isLast: i == variants.length - 1,
-                      // Hide per-row actions while another row is being edited.
-                      enabled: editingIndex == null,
-                      onEdit: () => ref
-                          .read(productDetailControllerProvider.notifier)
-                          .startEdit(i),
-                      onDelete: () => _confirmDelete(context, ref, i),
-                    ),
-              ],
+            child: ScrollableTable(
+              minWidth: 660,
+              child: Column(
+                children: [
+                  const _VariantHeader(),
+                  for (var i = 0; i < variants.length; i++)
+                    if (editingIndex == i)
+                      _EditableVariantRow(
+                        key: ValueKey('edit-$i'),
+                        index: i,
+                        variant: variants[i],
+                        sizes: detail.sizes,
+                        options: detail.options,
+                        isLast: i == variants.length - 1,
+                      )
+                    else
+                      _VariantRow(
+                        variant: variants[i],
+                        isLast: i == variants.length - 1,
+                        // Hide per-row actions while another row is being edited.
+                        enabled: editingIndex == null,
+                        onEdit: () => ref
+                            .read(productDetailControllerProvider.notifier)
+                            .startEdit(i),
+                        onDelete: () => _confirmDelete(context, ref, i),
+                      ),
+                ],
+              ),
             ),
           ),
         const SizedBox(height: 12),
